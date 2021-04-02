@@ -139,10 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="OGLTemplate.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MeshLoading.h" />
+    <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="OGLTemplate.h" />
   </ItemGroup>
   <ItemGroup>

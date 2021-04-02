@@ -6,8 +6,9 @@
 #include <gl/GLU.h>
 
 #include "OGLTemplate.h"
-#include "MeshLoading.h"
-
+#include "MeshLoader.h"
+//#include "BBox.h"
+//using namespace MeshLoader;
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glu32.lib")
 
@@ -30,9 +31,13 @@ HWND  ghwnd  = NULL;
 DWORD dwStyle;
 WINDOWPLACEMENT wpPrev = { sizeof(WINDOWPLACEMENT) };
 
+
 //Animation/Transformation variables
 GLfloat gRotateAngle = 0.0f;
 
+FILE* gpLogFile;
+BBox gMeshBBox;
+MeshLoader meshLoader;
 // WinMain()
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int iCmdShow)
 {
@@ -49,15 +54,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 	// code
 	// open file for logging
-	if (fopen_s(&gpLogFile, "obj-viewer.log", "w") != 0)
-	{
-		MessageBox(NULL, TEXT("Cannot open obj-viewer.log file.."), TEXT("Error"), MB_OK | MB_ICONERROR);
-		exit(0);
-	}
-	else
-	{ 
-		fprintf(gpLogFile, "==== Application Started ====\n");
-	}
+
 
 	// initialization of WNDCLASSEX
 	wndclass.cbSize = sizeof(WNDCLASSEX);
@@ -234,7 +231,7 @@ void initialize(void)
 {
 	// function declarations
 	void resize(int, int);
-	void loadMeshData(char*);
+	//void loadMeshData(char*, vec2dFloat_t*, vec2dFloat_t*, vec2dFloat_t*, vec2dFloat_t*, vec2dFloat_t*, vec2dFloat_t*, vec2dFloat_t*);
 
 	// variable declarations
 	PIXELFORMATDESCRIPTOR pfd;
@@ -292,8 +289,10 @@ void initialize(void)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	
 	char str[] = "standard-female-figure.obj";
-	loadMeshData(str);
-
+	meshLoader.loadMeshData(str);
+	gMeshBBox = meshLoader.computeBBox();
+	//loadMeshData(str);
+	//gMeshBBox =  computeBBox(MeshLoader::gpVertices);
 	// warm-up resize call
 	 resize(WIN_WIDTH, WIN_HEIGHT);
 }
@@ -328,38 +327,46 @@ void display(void)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	glTranslatef(0.0f, -1.50f, -4.0f); // as per Right hand rule -3 means backwards on z axis
+	GLfloat bBoxCenterX = 0.5 * (gMeshBBox.minX + gMeshBBox.maxX);
+	GLfloat bBoxCenterY = 0.5 * (gMeshBBox.minY + gMeshBBox.maxY);
+	GLfloat bBoxCenterZ = 0.5 * (gMeshBBox.minZ + gMeshBBox.maxZ);
+	GLfloat sizeX = gMeshBBox.maxX - gMeshBBox.minX;
+	GLfloat sizeY = gMeshBBox.maxY - gMeshBBox.minY;
+	GLfloat sizeZ = gMeshBBox.maxZ - gMeshBBox.minZ;
+	GLfloat maxVal = sizeY;
+	//glTranslatef(0.0f, -1.50f, -4.0f); // as per Right hand rule -3 means backwards on z axis
+	//glTranslatef(0.5 * (gMeshBBox.minX + gMeshBBox.maxX), -0.5 * (gMeshBBox.minY + gMeshBBox.maxY),- 0.5 * (gMeshBBox.minZ + gMeshBBox.maxZ));
+	gluLookAt(bBoxCenterX, bBoxCenterY, 2.5* maxVal, bBoxCenterX, bBoxCenterY, bBoxCenterZ, 0, 1, 0);
 	glRotatef(gRotateAngle, 0.0f, 1.0f, 0.0f);
 
-	glScalef(0.10f, 0.10f, 0.10f);
+	//glScalef(0.10f, 0.10f, 0.10f);
 
 	glFrontFace(GL_CCW);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	fprintf(gpLogFile, "Size of FaceQuads are : %zu\n", gpFaceQuads->size);
-	fprintf(gpLogFile, "Size of FaceQuads are : %zu\n", gpFaceTriangles->size);
+	//fprintf(gpLogFile, "Size of FaceQuads are : %zu\n",meshLoader.m_pFaceQuads->size);
+	//fprintf(gpLogFile, "Size of FaceQuads are : %zu\n", meshLoader.m_pFaceTriangles->size);
 
 	//Show all quads
-	for (int i = 0; i != gpFaceQuads->size; i++)
+	for (int i = 0; i != meshLoader.m_pFaceQuads->size; i++)
 	{
 		glBegin(GL_QUADS);
 		for (int j = 0; j != QUAD_VERTICES; j++)
 		{
-			int vi = gpFaceQuads->pp_arr[i][j] - 1;
-			glVertex3f(gpVertices->pp_arr[vi][0], gpVertices->pp_arr[vi][1], gpVertices->pp_arr[vi][2]);
+			int vi = meshLoader.m_pFaceQuads->pp_arr[i][j] - 1;
+			glVertex3f(meshLoader.m_pVertices->pp_arr[vi][0], meshLoader.m_pVertices->pp_arr[vi][1], meshLoader.m_pVertices->pp_arr[vi][2]);
 		}
 		glEnd();
 	}
 
 	//Show all triangles
-	for (int i = 0; i != gpFaceTriangles->size; i++)
+	for (int i = 0; i != meshLoader.m_pFaceTriangles->size; i++)
 	{
 		glBegin(GL_TRIANGLES);
 		for (int j = 0; j != TRIANGE_VERTICES; j++)
 		{
-			int vi = gpFaceTriangles->pp_arr[i][j] - 1;
-			glVertex3f(gpVertices->pp_arr[vi][0], gpVertices->pp_arr[vi][1], gpVertices->pp_arr[vi][2]);
+			int vi = meshLoader.m_pFaceTriangles->pp_arr[i][j] - 1;
+			glVertex3f(meshLoader.m_pVertices->pp_arr[vi][0], meshLoader.m_pVertices->pp_arr[vi][1], meshLoader.m_pVertices->pp_arr[vi][2]);
 		}
 		glEnd();
 	}
