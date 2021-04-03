@@ -147,16 +147,6 @@ void MeshLoader::loadMeshData(char* fileName) {
 
 	//Wrapper around calloc
 	void* CallocWrapper(int, size_t);
-	/*	gpLogFile = NULL;
-		if (fopen_s(&gpLogFile, "obj-viewer.log", "w") != 0)
-		{
-			MessageBox(NULL, TEXT("Cannot open obj-viewer.log file.."), TEXT("Error"), MB_OK | MB_ICONERROR);
-			exit(0);
-		}
-		else
-		{
-			fprintf(gpLogFile, "==== Application Started ====\n");
-		}*/
 		//code
 	fopen_s(&gpMeshFile, fileName, "r");
 	if (!gpMeshFile)
