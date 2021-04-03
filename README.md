@@ -7,6 +7,6 @@ A simple obj model viewer.
 - add ~~mesh loading code~~
 - modify mesh loading code to handle other cases: ~~Added for Triangles and Quads~~
 - add camera
-- add logic to find bounding box for model and adjust camera according to that
+- add ~~logic to find bounding box for model and adjust camera according to that~~
 - add default light
 - add default texture
