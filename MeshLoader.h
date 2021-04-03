@@ -49,6 +49,8 @@ void* ReallocWrapper(void* , size_t );
 
 class MeshLoader {
 	public:
+		MeshLoader();
+		~MeshLoader();
 		vec2dFloat_t* m_pVertices;
 		vec2dFloat_t* m_pTexture;
 		vec2dFloat_t* m_pNormals;

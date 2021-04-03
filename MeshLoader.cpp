@@ -6,8 +6,7 @@
 #include"MeshLoader.h"
 char gpLine[BUFFER_SIZE];
 FILE* gpMeshFile;
-#define MAX_FLOAT_VALUE 3.402823E+38
-#define MIN_FLOAT_VALUE 1.175494351E-38
+
 //using namespace MeshLoader;
 //Line in a file
 
@@ -98,7 +97,42 @@ void* ReallocWrapper(void* p, size_t newSize)
 	return ptr;
 }
 
+MeshLoader::MeshLoader(void) {
+	//constructor
+}
+MeshLoader::~MeshLoader(void) {
+	//destructor
+	if (m_pVertices) {
+		CleanVec2DFloat(&m_pVertices);
+		m_pVertices = NULL;
+	}
+	if (m_pTexture) {
+		CleanVec2DFloat(&m_pTexture);
+		m_pTexture = NULL;
+	}
+	if (m_pNormals) {
+		CleanVec2DFloat(&m_pNormals);
+		m_pNormals = NULL;
+	}
 
+	if (m_pFaceTriangles) {
+		CleanVec2DInt(&m_pFaceTriangles);
+		m_pFaceTriangles = NULL;
+	}
+	if (m_pFaceTextures) {
+		CleanVec2DInt(&m_pFaceTextures);
+		m_pFaceTextures = NULL;
+	}
+	if (m_pFaceNormals) {
+		CleanVec2DInt(&m_pFaceNormals);
+		m_pFaceNormals = NULL;
+	}
+	if (m_pFaceQuads) {
+		CleanVec2DInt(&m_pFaceQuads);
+		m_pFaceQuads = NULL;
+	}
+	
+}
 void MeshLoader::loadMeshData(char* fileName) {
 	//Function declarations
 	void uninitialize();

@@ -334,12 +334,9 @@ void display(void)
 	GLfloat sizeY = gMeshBBox.maxY - gMeshBBox.minY;
 	GLfloat sizeZ = gMeshBBox.maxZ - gMeshBBox.minZ;
 	GLfloat maxVal = max(max(sizeX, sizeY), sizeZ);
-	//glTranslatef(0.0f, -1.50f, -4.0f); // as per Right hand rule -3 means backwards on z axis
-	//glTranslatef(0.5 * (gMeshBBox.minX + gMeshBBox.maxX), -0.5 * (gMeshBBox.minY + gMeshBBox.maxY),- 0.5 * (gMeshBBox.minZ + gMeshBBox.maxZ));
+
 	gluLookAt(bBoxCenterX, bBoxCenterY, 2.5* maxVal, bBoxCenterX, bBoxCenterY, bBoxCenterZ, 0, 1, 0);
 	glRotatef(gRotateAngle, 0.0f, 1.0f, 0.0f);
-
-	//glScalef(0.10f, 0.10f, 0.10f);
 
 	glFrontFace(GL_CCW);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
