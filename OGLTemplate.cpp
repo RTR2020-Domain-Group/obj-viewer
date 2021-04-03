@@ -328,8 +328,8 @@ void display(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	GLfloat bBoxCenterX = 0.5f * (gMeshBBox.minX + gMeshBBox.maxX);
-	GLfloat bBoxCenterY = 0.5 * (gMeshBBox.minY + gMeshBBox.maxY);
-	GLfloat bBoxCenterZ = 0.5 * (gMeshBBox.minZ + gMeshBBox.maxZ);
+	GLfloat bBoxCenterY = 0.5f * (gMeshBBox.minY + gMeshBBox.maxY);
+	GLfloat bBoxCenterZ = 0.5f * (gMeshBBox.minZ + gMeshBBox.maxZ);
 	GLfloat sizeX = gMeshBBox.maxX - gMeshBBox.minX;
 	GLfloat sizeY = gMeshBBox.maxY - gMeshBBox.minY;
 	GLfloat sizeZ = gMeshBBox.maxZ - gMeshBBox.minZ;
